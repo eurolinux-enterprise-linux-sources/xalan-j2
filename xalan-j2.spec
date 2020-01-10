@@ -32,7 +32,7 @@
 
 Name:           xalan-j2
 Version:        2.7.0
-Release:        9.8%{?dist}
+Release:        9.9%{?dist}
 Epoch:          0
 Summary:        Java XSLT processor
 # samples/servlet/ApplyXSLTException.java is ASL 1.1
@@ -45,6 +45,10 @@ Patch1:         %{name}-manifest.patch
 Patch2:         %{name}-crosslink.patch
 #This patch uses xalan-j2-serializer.jar in the MANIFEST files instead of serializer
 Patch3:		%{name}-src-MANIFEST-MF.patch
+# Fix CVE-2014-0107: insufficient constraints in secure processing
+# feature (oCERT-2014-002).  Generated form upstream revisions 1581058
+# and 1581426.
+Patch4:         %{name}-CVE-2014-0107.patch
 URL:            http://xalan.apache.org/
 Group:          Text Processing/Markup/XML
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -116,6 +120,7 @@ Demonstrations and samples for %{name}.
 %patch3 -p0
 #%patch1 -p0
 #%patch2 -p0
+%patch4 -p1
 # Remove all binary libs, except ones needed to build docs and N/A elsewhere.
 for j in $(find . -name "*.jar"); do
 	mv $j $j.no
@@ -249,6 +254,10 @@ update-alternatives --install %{_javadir}/jaxp_transform_impl.jar \
 %{_datadir}/%{name}
 
 %changelog
+* Thu Mar 27 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.7.0-9.9
+- Add patch to fix remote code execution vulnerability
+- Resolves: CVE-2014-0107
+
 * Tue Feb 9 2010 Alexander Kurtakov <akurtako@redhat.com> 0:2.7.0-9.8
 - Use apache-tomcat-apis instead of tomcat5-*.
 
