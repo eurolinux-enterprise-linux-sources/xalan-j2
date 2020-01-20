@@ -32,7 +32,7 @@
 
 Name:           xalan-j2
 Version:        2.7.1
-Release:        21%{?dist}
+Release:        23%{?dist}
 Epoch:          0
 Summary:        Java XSLT processor
 # src/org/apache/xpath/domapi/XPathStylesheetDOM3Exception.java is W3C
@@ -47,6 +47,10 @@ Patch0:         %{name}-noxsltcdeps.patch
 # Fix the serializer JAR filename in xalan-j2's MANIFEST.MF
 # https://bugzilla.redhat.com/show_bug.cgi?id=718738
 Patch1:         %{name}-serializerJARname.patch
+# Fix CVE-2014-0107: insufficient constraints in secure processing
+# feature (oCERT-2014-002).  Generated form upstream revisions 1581058
+# and 1581426.
+Patch2:         %{name}-CVE-2014-0107.patch
 URL:            http://xalan.apache.org/
 Group:          Development/Libraries
 
@@ -116,6 +120,7 @@ Demonstrations and samples for %{name}.
 %setup -q -n xalan-j_%{cvs_version}
 %patch0 -p0
 %patch1 -p0
+%patch2 -p1
 # Remove all binary libs, except ones needed to build docs and N/A elsewhere.
 for j in $(find . -name "*.jar"); do
     mv $j $j.no
@@ -244,6 +249,13 @@ update-alternatives --install %{_javadir}/jaxp_transform_impl.jar \
 %{_datadir}/%{name}
 
 %changelog
+* Thu Mar 27 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.7.1-23
+- Add patch to fix remote code execution vulnerability
+- Resolves: CVE-2014-0107
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 02.7.1-22
+- Mass rebuild 2013-12-27
+
 * Mon Aug 19 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:2.7.1-21
 - Move depmaps to appropriate packages
 - Resolves: rhbz#998605
